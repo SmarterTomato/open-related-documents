@@ -2,7 +2,7 @@
 	"name": "open-related-documents",
 	"displayName": "Open Related Documents",
 	"description": "Open documents that related to current opened documents (E.g. accountModel.ts, accountService.ts, accountManager.ts, accountService.test.ts, accountServices.mock.ts)",
-	"version": "1.0.0",
+	"version": "v1.0.0",
 	"engines": {
 		"vscode": "^1.55.0"
 	},
