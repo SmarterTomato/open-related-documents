@@ -68,18 +68,7 @@ export default class FileService {
     } else {
       // > Result not found, try to calculate right now
       const workspaceFiles = await this.getAllFilesInCurrentWorkspace();
-      activeFile = workspaceFiles.find((x) => x.hasUri(fileUri));
-      if (!activeFile) {
-        // ! Could not find file, maybe because of the file is not in any workspace
-        vscode.window.showInformationMessage(
-          "Active file does not belong to any workspace, could not found related files."
-        );
-        console.info(
-          "Active file does not belong to any workspace, could not found related files: " +
-            fileUri.path
-        );
-        return;
-      }
+      activeFile = this.getFileInfo(fileUri);
 
       relatedResults = this.findRelatedFiles(activeFile, workspaceFiles);
       activeFile.relatedResults = relatedResults;
