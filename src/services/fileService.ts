@@ -128,10 +128,9 @@ export default class FileService {
       this.cachingWorkspaceFiles();
     });
 
-    vscode.workspace.onDidCreateFiles((event) => {
+    vscode.workspace.onDidCreateFiles(async (event) => {
       for (const uri of event.files) {
-        const file = this.getFileInfo(uri);
-        this.workspaceFiles.push(file);
+        await this.onFileAdded(uri);
       }
     });
 
@@ -146,9 +145,7 @@ export default class FileService {
         // - Removes the old file from the cache
         this.removeFileFromCache(changedUri.oldUri);
 
-        // - Calculates the new file info
-        const file = this.getFileInfo(changedUri.newUri);
-        this.workspaceFiles.push(file);
+        await this.onFileAdded(changedUri.newUri);
       }
     });
   }
@@ -268,5 +265,34 @@ export default class FileService {
     let file = new FileInfo(uri);
     file.matchResults = this.fileMatchingService.calculateMatchResults(file);
     return file;
+  }
+
+  private async onFileAdded(uri: vscode.Uri) {
+    let workspaceFiles = await this.getAllFilesInCurrentWorkspace();
+
+    // - Calculate this new file
+    let file = this.getFileInfo(uri);
+    const relatedResults = this.findRelatedFiles(file, workspaceFiles);
+    file.relatedResults = relatedResults;
+
+    // - Calculate related file result as well
+    for (const item of file.relatedResults) {
+      let relatedFile = item.fileInfo;
+
+      const relatedResult = this.fileMatchingService.checkIfFilesMatch(relatedFile, file);
+      // + This should not happen
+      if (!relatedResult) {
+        continue;
+      }
+
+      // + Replace existing file in cache
+      relatedFile.relatedResults.push(relatedResult);
+      this.workspaceFiles = this.workspaceFiles.filter(
+        (x) => x.hasUri(item.fileInfo.uri) === false
+      );
+      this.workspaceFiles.push(relatedFile);
+    }
+
+    this.workspaceFiles.push(file);
   }
 }
