@@ -45,8 +45,7 @@
 		}],
 		"keybindings": [{
 			"command": "openRelatedDocuments.quickOpen",
-			"key": "ctrl+;",
-			"when": "editorTextFocus"
+			"key": "ctrl+;"
 		}],
 		"configuration": [{
 			"title": "OpenRelatedDocuments",
