@@ -1,0 +1,2 @@
+- Always opens when only one related file found
+- Always opens first non-default related file

@@ -13,15 +13,29 @@ export function activate(context: vscode.ExtensionContext) {
   const fileService = FileService.getInstance();
   fileService.init();
 
-  const quickOpenDisposable = vscode.commands.registerCommand(
-    "openRelatedDocuments.quickOpen",
-    () => {
-      console.log("Quick open command started");
+  const openRelatedDocumentDisposable = vscode.commands.registerCommand(
+    "openRelatedDocuments.openRelatedDocument",
+    (uri: vscode.Uri) => {
+      console.log("Open Related Document command started");
 
-      fileService.quickOpen();
+      if (!uri) {
+        // - Trying to get active text editor
+        const activeTextEditor = vscode.window.activeTextEditor;
+        if (!activeTextEditor) {
+          vscode.window.showInformationMessage(
+            "Open related documents activated, but no active text editor detected"
+          );
+          console.log("Open related documents activated, but no active text editor detected");
+          return;
+        }
+
+        uri = activeTextEditor.document.uri;
+      }
+
+      fileService.openRelatedDocument(uri);
     }
   );
-  context.subscriptions.push(quickOpenDisposable);
+  context.subscriptions.push(openRelatedDocumentDisposable);
 }
 
 // this method is called when your extension is deactivated

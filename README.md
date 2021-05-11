@@ -4,7 +4,7 @@ Open Related Documents is a vscode extension. Provides a quick way to open docum
 
 ## Features
 
-### Quick open
+### Open Related Document
 
 Shortcuts: `Ctrl + ;`
 

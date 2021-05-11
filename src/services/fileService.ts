@@ -39,36 +39,30 @@ export default class FileService {
   }
 
   /**
-   * Opens a quick open in vscode that contains a list of related document names
    * - User must be focused on an document in vscode
    * - Trying to find the file from the cache
-   *   > If not found, maybe because caching still running on the background. Trying to calculate it right now
+   *   + If not found, maybe because caching still running on the background. Trying to calculate it right now
    * - Show vscode quick open
+   * @param uri
+   * @returns
    */
-  async quickOpen() {
-    // - Trying to get active text editor
-    const activeTextEditor = vscode.window.activeTextEditor;
-    if (!activeTextEditor) {
-      vscode.window.showInformationMessage(
-        "Open related documents activated, but no active text editor detected"
-      );
-      console.log("Open related documents activated, but no active text editor detected");
+  async openRelatedDocument(uri: vscode.Uri) {
+    if (!uri) {
       return;
     }
 
-    console.log("Quick open with current active document: " + activeTextEditor.document.uri.path);
+    console.log("Open related document : " + uri.fsPath);
 
     let relatedResults: MatchResult[] = [];
     // - Trying to find the file from the pre-calculated result first
-    const fileUri = activeTextEditor.document.uri;
-    let activeFile = this.workspaceFiles.find((x) => x.hasUri(fileUri));
+    let activeFile = this.workspaceFiles.find((x) => x.hasUri(uri));
     if (activeFile) {
       relatedResults = activeFile.relatedResults;
       console.log("Found active file in the cached files");
     } else {
       // > Result not found, try to calculate right now
       const workspaceFiles = await this.getAllFilesInCurrentWorkspace();
-      activeFile = this.getFileInfo(fileUri);
+      activeFile = this.getFileInfo(uri);
 
       relatedResults = this.findRelatedFiles(activeFile, workspaceFiles);
       activeFile.relatedResults = relatedResults;

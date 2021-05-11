@@ -26,7 +26,7 @@
 	},
 	"activationEvents": [
 		"onStartupFinished",
-		"onCommand:openRelatedDocuments.quickOpen"
+		"onCommand:openRelatedDocuments.openRelatedDocument"
 	],
 	"main": "./out/extension.js",
 	"scripts": {
@@ -39,14 +39,28 @@
 	},
 	"contributes": {
 		"commands": [{
-			"command": "openRelatedDocuments.quickOpen",
-			"title": "Quick Open",
-			"category": "Open Related Documents"
+			"command": "openRelatedDocuments.openRelatedDocument",
+			"title": "Open Related Document",
+			"category": "Open Related Documents",
+			"icon": {
+				"light": "resources/img/file_present_black.svg",
+				"dark": "resources/img/file_present_white.svg"
+			}
 		}],
 		"keybindings": [{
-			"command": "openRelatedDocuments.quickOpen",
+			"command": "openRelatedDocuments.openRelatedDocument",
 			"key": "ctrl+;"
 		}],
+		"menus": {
+			"editor/title/context": [{
+				"command": "openRelatedDocuments.openRelatedDocument",
+				"group": "navigation"
+			}],
+			"editor/title": [{
+				"command": "openRelatedDocuments.openRelatedDocument",
+				"group": "navigation"
+			}]
+		},
 		"configuration": [{
 			"title": "OpenRelatedDocuments",
 			"properties": {
